@@ -15,6 +15,17 @@ abstract class UserDatabase: RoomDatabase() {
         private var INTANCE: UserDatabase? = null
 
         fun getDatabase(context: Context): UserDatabase {
+            //            cara kotlin
+            return INTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        UserDatabase::class.java,
+                        "user_database"
+                ).build()
+                INTANCE = instance
+                instance
+            }
+
 //            cara panjang
 //            val tempInstance = INTANCE
 //            if (tempInstance != null) {
@@ -30,17 +41,6 @@ abstract class UserDatabase: RoomDatabase() {
 //                INTANCE = instance
 //                return instance
 //            }
-
-//            cara kotlin
-            return INTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        UserDatabase::class.java,
-                        "user_database"
-                ).build()
-                INTANCE = instance
-                instance
-            }
         }
     }
 }
