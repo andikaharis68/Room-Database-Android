@@ -1,27 +1,22 @@
 package com.example.roomDatabase.data
 
 import androidx.lifecycle.LiveData
+import com.example.roomDatabase.data.model.Item
+import com.example.roomDatabase.data.model.ItemAndUnit
+import com.example.roomDatabase.data.model.Unit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserRepository(private val dao: UserDao) {
-    private val usersList: LiveData<List<User>> = dao.readAllUser()
 
-    suspend fun addUser(user: User) {
-        dao.addUser(user)
+    fun getItemWithUnit() :LiveData<List<ItemAndUnit>> {
+        return dao.getItemsWithUnit()
     }
 
-    fun getUser() : LiveData<List<User>>{
-        return usersList
-    }
-
-    fun getUserById(id:Int): LiveData<List<User>>{
-        return dao.getById(id)
-    }
-
-    suspend fun userUpdate(id: Int, firstName:String, lastName:String, age:Int){
-        dao.update(id, firstName, lastName, age)
-    }
-
-    suspend fun delete(user: User){
-        dao.delete(user)
+    fun addUnit(unit:Unit){
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.addUnit(unit)
+        }
     }
 }

@@ -3,14 +3,14 @@ package com.example.roomDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.roomDatabase.data.User
-import com.example.roomDatabase.data.UserDatabase
+import com.example.roomDatabase.data.InventoryDatabase
 import com.example.roomDatabase.data.UserRepository
 import com.example.roomDatabase.data.UserViewModel
+import com.example.roomDatabase.data.model.ItemAndUnit
+import com.example.roomDatabase.data.model.Unit
 
 //Rom database mirip meyimpan data ke database
 //databasenya namanya sql lite
@@ -23,18 +23,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initViewModel()
+//        userViewModel.addUnit(Unit(code = "kg", description="kilogram"))
         subscribe()
-        userViewModel.addUser(User(firstName = "joko", lastName = "haris", age = 20))
-        userViewModel.userUpdate(1, "dika", "rengga", 11)
-        userViewModel.delete(User(2, firstName = "joko", lastName = "haris", age = 20))
-        findUserById(1)
     }
 
     private fun initViewModel() {
         userViewModel = ViewModelProvider(this,
                 object : ViewModelProvider.Factory {
                     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                        val userDao = UserDatabase.getDatabase(this@MainActivity).dao()
+                        val userDao = InventoryDatabase.getDatabase(this@MainActivity).dao()
                         val userRepository = UserRepository(userDao)
                         return UserViewModel(userRepository) as T
                     }
@@ -42,14 +39,8 @@ class MainActivity : AppCompatActivity() {
             }
 
         private fun subscribe() {
-            userViewModel.usersList.observe(this, Observer<List<User>> {
+            userViewModel.usersList.observe(this, Observer<List<ItemAndUnit>> {
                 Log.d("OUTPUT", "$it")
-            })
-        }
-
-        private fun findUserById(id:Int){
-            userViewModel.getUserById(id).observe(this, Observer<List<User>> {
-                Log.d("FIND ID", "$it")
             })
         }
     }
